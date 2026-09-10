@@ -21,6 +21,7 @@ class Room {
     this.createdAt = Date.now();
     this.lastActivity = Date.now();
     this.streams = new Map(); // token -> Set(res)
+    this.sockets = new Map(); // token -> Set(WebSocket)
   }
 
   hasPassword() {
@@ -34,6 +35,12 @@ class Room {
 
   broadcast() {
     this.race.inputNow = Date.now();
+    for (const [token, sockets] of this.sockets) {
+      const data = JSON.stringify({type: 'state', state: this.state(token)});
+      for (const socket of sockets) {
+        if (socket.readyState === 1 && socket.bufferedAmount < 65536) socket.send(data);
+      }
+    }
     for (const [token, set] of this.streams) {
       const data = 'data: ' + JSON.stringify(this.state(token)) + '\n\n';
       for (const res of set) {

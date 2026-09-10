@@ -15,3 +15,5 @@ android/
 ios/
 *.mobileprovision
 *.ipa
+www/
+artifacts/

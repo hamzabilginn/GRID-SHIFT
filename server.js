@@ -1,5 +1,6 @@
 const http = require('node:http'), fs = require('node:fs'), path = require('node:path'), os = require('node:os');
 const { RoomManager } = require('./rooms');
+const { attachRealtime } = require('./realtime');
 const rooms = new RoomManager();
 const port = Number(process.env.PORT || 80);
 
@@ -42,6 +43,10 @@ const server = http.createServer(async (req, res) => {
 
   const url = new URL(req.url, 'http://localhost');
 
+  if (req.method === 'GET' && url.pathname === '/api/health') {
+    return json(res, 200, {ok: true, service: 'grid-shift', protocol: 'websocket-v1'});
+  }
+
   if (req.method === 'GET' && url.pathname === '/api/info') {
     return json(res, 200, { addresses: addresses() });
   }
@@ -77,7 +82,7 @@ const server = http.createServer(async (req, res) => {
       room.streams.get(token)?.delete(res);
       if (!room.streams.get(token)?.size) {
         room.streams.delete(token);
-        room.race.connection(token, false);
+        if (!room.sockets.has(token)) room.race.connection(token, false);
         room.lastActivity = Date.now();
         room.broadcast();
       }
@@ -172,6 +177,7 @@ const server = http.createServer(async (req, res) => {
 
   json(res, 404, { error: 'Bulunamadı.' });
 });
+attachRealtime(server, rooms);
 
 let previous = performance.now(), accumulator = 0;
 setInterval(() => {
@@ -188,7 +194,7 @@ setInterval(() => {
 
 setInterval(() => {
   for (const room of rooms.rooms.values()) {
-    if (room.streams.size && ['race', 'countdown'].includes(room.race.phase)) {
+    if ((room.streams.size || room.sockets.size) && ['race', 'countdown'].includes(room.race.phase)) {
       room.broadcast();
     }
   }
@@ -196,7 +202,7 @@ setInterval(() => {
 
 setInterval(() => {
   for (const room of rooms.rooms.values()) {
-    if (room.streams.size) {
+    if (room.streams.size || room.sockets.size) {
       room.broadcast();
     }
   }
@@ -212,6 +218,7 @@ server.listen(port, process.env.HOST || '0.0.0.0', () => {
   console.log(`🏁 GRID SHIFT ONLINE SUNUCUSU HAZIR!\nWeb Adresi: ${urlDisplay}\nDurdur: Ctrl+C`);
   if (port === 80) {
     const altServer = http.createServer(server.listeners('request')[0]);
+    attachRealtime(altServer, rooms);
     altServer.on('error', () => {});
     altServer.listen(3001, '0.0.0.0', () => {
       console.log(`(Ayrıca port 3001 üzerinden de açık: http://localhost:3001)`);

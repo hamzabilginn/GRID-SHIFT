@@ -25,7 +25,7 @@ class Race {
   upgrades=[...new Set(upgrades)];
   if(token&&this.players.has(token)){
    const existing=this.players.get(token);
-   if(carId&&P.CARS.some(c=>c.id===carId)){
+   if(this.phase==='lobby'&&carId&&P.CARS.some(c=>c.id===carId)){
     const cost=calcCost(carId,upgrades);
     if(cost<=100){
      const spec=P.CARS.find(c=>c.id===carId);

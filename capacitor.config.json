@@ -1,7 +1,7 @@
 {
   "appId": "com.hamzabilginn.gridshift",
   "appName": "Grid Shift",
-  "webDir": "public",
+  "webDir": "www",
   "server": {"androidScheme": "https"},
   "android": {"allowMixedContent": false},
   "ios": {"contentInset": "automatic"}

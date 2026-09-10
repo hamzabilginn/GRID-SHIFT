@@ -13,9 +13,10 @@
     "node": ">=22"
   },
   "dependencies": {
-    "@capacitor/core": "^8.0.0",
     "@capacitor/android": "^8.0.0",
-    "@capacitor/ios": "^8.0.0"
+    "@capacitor/core": "^8.0.0",
+    "@capacitor/ios": "^8.0.0",
+    "ws": "^8.21.3"
   },
   "devDependencies": {
     "@capacitor/cli": "^8.0.0"

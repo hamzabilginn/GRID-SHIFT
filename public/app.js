@@ -25,7 +25,7 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
   let lastPhase = '';
   const practice = new URLSearchParams(location.search).has('practice');
   const nativeApp = window.Capacitor?.isNativePlatform?.() || false;
-  const apiBase = nativeApp ? 'https://gridshift.18.197.113.156.sslip.io' : '';
+  const apiBase = nativeApp ? (window.GRIDSHIFT_CONFIG?.apiBase || '') : '';
   let localRace = null;
   let practiceClock = Date.now();
   if (practice) token = null;
@@ -57,10 +57,13 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
       if (route === 'action') { localRace.action(token, body.action, body, practiceClock); state = localRace.state(token); if (body.action !== 'input') renderUI(); }
       return { token, roomId: 'practice', state: localRace.state(token) };
     }
+    if (nativeApp && !apiBase) throw Error('Çevrimiçi servis henüz ayarlanmadı. Antrenmanı çevrimdışı oynayabilirsin.');
+    if (route === 'action' && events?.mode === 'websocket') return events.send(body);
     const r = await fetch(apiBase + '/api/' + route, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(8000)
     });
     const d = await r.json();
     if (!r.ok) throw new Error(d.error);
@@ -269,13 +272,20 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
       updateConnection();
       return;
     }
-    events = new EventSource(apiBase + '/api/events?token=' + encodeURIComponent(token) + '&room=' + encodeURIComponent(currentRoomId || 'genel'));
+    events = new window.GridShiftConnection({base:apiBase, token, roomId:currentRoomId || 'genel'});
+    events.onexpired = () => {
+      online = false; token = null; state = null;
+      sessionStorage.removeItem('gs-token');
+      document.body.classList.remove('racing');
+      $('#race-hud').hidden = true;
+      updateConnection(); renderPanel(); toast('Oturum sona erdi. Odaya yeniden katıl.');
+    };
     events.onmessage = e => {
       online = true;
       state = JSON.parse(e.data);
       offset = state.serverTime - Date.now();
       if (state.roomId) currentRoomId = state.roomId;
-      shareAddr = location.origin + (currentRoomId !== 'genel' ? `/?room=${encodeURIComponent(currentRoomId)}` : '');
+      shareAddr = (apiBase || location.origin) + (currentRoomId !== 'genel' ? `/?room=${encodeURIComponent(currentRoomId)}` : '');
       if (!trackData || trackData.id !== state.trackId) {
         trackData = P.makeTrack(state.trackId);
         build3DTrack(trackData);
@@ -292,7 +302,9 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
     events.onopen = () => { online = true; updateConnection(); };
     events.onerror = async () => {
       online = false;
+      releaseControls();
       updateConnection();
+      if (events?.mode !== 'sse') return;
       try {
         await api('rooms/join', { roomId: currentRoomId, token });
       } catch (err) {
@@ -2299,14 +2311,18 @@ const chromeMat = new THREE.MeshMatcapMaterial({ matcap: autoMatcapTex, color: 0
   /* ── Multi-Room Online Lobby Functions ── */
   let selectedTrackForNewRoom = 0;
   let selectedLapsForNewRoom = 3;
+  let roomsError = false;
 
   async function loadRooms() {
     try {
+      if (nativeApp && !apiBase) throw Error('Online service not configured');
       const res = await fetch(apiBase + '/api/rooms', { signal: AbortSignal.timeout(5000) });
+      if (!res.ok) throw Error('Room service unavailable');
       const data = await res.json();
       cachedRooms = data.rooms || [];
+      roomsError = false;
     } catch (err) {
-      cachedRooms = [];
+      roomsError = true;
     }
   }
 
@@ -2374,10 +2390,10 @@ const chromeMat = new THREE.MeshMatcapMaterial({ matcap: autoMatcapTex, color: 0
 
       let roomsHtml = '';
       if (cachedRooms.length === 0) {
-        roomsHtml = '<div style="padding:16px;text-align:center;color:var(--muted);font-size:11px">Şu anda aktif oda bulunamadı. Yeni bir oda kurabilirsiniz!</div>';
+        roomsHtml = '<div style="padding:16px;text-align:center;color:var(--muted);font-size:11px">' + (roomsError ? 'Sunucuya ulaşılamıyor. Bağlantını kontrol et veya çevrimdışı antrenmana çık.' : 'Şu anda aktif oda bulunamadı. Yeni bir oda kurabilirsiniz!') + '</div>';
       } else {
         roomsHtml = cachedRooms.map(r => `
-          <div class="room-card">
+          <div class="room-card" data-room-id="${esc(r.id)}">
             <div class="room-card-main">
               <div class="room-card-title">
                 ${r.hasPassword ? '<span title="Şifreli Özel Oda">🔒</span>' : ''}
@@ -2387,11 +2403,11 @@ const chromeMat = new THREE.MeshMatcapMaterial({ matcap: autoMatcapTex, color: 0
                 <span>🛣️ ${esc(r.trackName)}</span>
                 <span>🏁 ${r.laps} Tur</span>
                 <span class="room-badge ${r.hasPassword ? 'lock' : 'open'}">${r.hasPassword ? 'ŞİFRELİ' : 'AÇIK'}</span>
-                <span class="room-badge ${r.phase === 'race' ? 'racing' : 'live'}">${r.phase === 'race' ? 'YARIŞTA' : 'LOBİ'}</span>
-                <span style="color:var(--cyan);font-weight:bold">● ${r.playersCount}/${r.maxPlayers}</span>
+                <span class="room-badge live" data-room-phase>${r.phase === 'lobby' ? 'LOBİ' : r.phase === 'results' ? 'SONUÇLAR' : 'YARIŞTA'}</span>
+                <span data-room-count style="color:var(--cyan);font-weight:bold">● ${r.playersCount}/${r.maxPlayers}</span>
               </div>
             </div>
-            <button type="button" class="room-join-btn" data-join-room="${esc(r.id)}" data-locked="${r.hasPassword ? '1' : '0'}">
+            <button type="button" class="room-join-btn" ${r.phase !== 'lobby' || r.playersCount >= r.maxPlayers ? 'disabled' : ''} data-join-room="${esc(r.id)}" data-locked="${r.hasPassword ? '1' : '0'}">
               ${r.hasPassword ? 'KİLİT 🔑' : 'KATIL ↗'}
             </button>
           </div>
@@ -2426,7 +2442,7 @@ const chromeMat = new THREE.MeshMatcapMaterial({ matcap: autoMatcapTex, color: 0
           </button>
           <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
             <button type="button" id="refresh-rooms-btn" class="quiet" style="font-size:8.5px">↻ Odaları Yenile</button>
-            <span class="minor">Portsuz Doğrudan Web Bağlantısı</span>
+            <span class="minor" id="room-refresh-status" role="status">Oyuncu sayıları otomatik güncellenir</span>
           </div>
         ` : `
           <form id="create-room-form" class="room-create-box">
@@ -2487,7 +2503,7 @@ const chromeMat = new THREE.MeshMatcapMaterial({ matcap: autoMatcapTex, color: 0
 
       const quickPlayBtn = $('#quick-play-btn');
       if (quickPlayBtn) quickPlayBtn.onclick = () => {
-        const firstOpen = cachedRooms.find(r => !r.hasPassword) || { id: 'genel' };
+        const firstOpen = cachedRooms.find(r => !r.hasPassword && r.phase === 'lobby' && r.playersCount < r.maxPlayers) || { id: 'genel' };
         joinSelectedRoom(firstOpen.id);
       };
 
@@ -2885,6 +2901,7 @@ const chromeMat = new THREE.MeshMatcapMaterial({ matcap: autoMatcapTex, color: 0
   function releaseControls() {
     pressed.clear();
     $$('#touch-controls button').forEach(button => button.classList.remove('held'));
+    if (online && state?.phase === 'race') api('action', {token, action:'input', seq:++seq, throttle:0, steer:0, drift:false, boost:false}).catch(() => {});
   }
   window.addEventListener('blur', releaseControls);
   document.addEventListener('race-menu-open', releaseControls);
