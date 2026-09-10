@@ -1,0 +1,97 @@
+<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#111315"><title>GRID SHIFT · Online Multiplayer Racing</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6638'/%3E%3Ctext x='16' y='77' font-size='80' font-family='Arial' font-weight='900' fill='%23111315'%3EG%3C/text%3E%3C/svg%3E"><link rel="stylesheet" href="/style.css?v=20260909_online"><script type="importmap">{"imports":{"three":"/three.module.js","three/addons/":"/addons/"}}</script><script src="/physics.js?v=20260909_online"></script><script type="module" src="/app.js?v=20260909_online"></script><link rel="stylesheet" href="/mobile.css"><script src="/offline-race.js"></script></head>
+<body><div id="menu-shell"><header><a class="brand" href="/"><span class="brand-mark">///</span>GRID<span>SHIFT</span><small>ONLINE MULTIPLAYER</small></a><div class="top-right"><button id="top-cam-btn" class="cam-nav-btn">📹 <span id="top-cam-text">POV SÜRÜŞ</span> <kbd>C</kbd></button><button id="garage-open-btn" class="garage-nav-btn">🏎️ GARAJ & MODİFİYE (100 CR)</button><span class="connection"><i></i><span id="connection-text">ONLINE SUNUCU</span></span><button id="sound" class="quiet" aria-pressed="false">SES KAPALI</button></div></header>
+<main class="menu"><section class="showcase"><canvas id="track" aria-label="Yarış pisti"></canvas><div class="scene-top"><span class="flag">CANLI PİST</span><span id="track-name">01 / LİMAN TURU</span></div><div class="hero-copy"><div class="eyebrow">MESAi BİTTİ. REKABET BAŞLADI.</div><h1>VİRAJI AL.<br><em>ZİRVEYE ÇIK.</em></h1><p>Gerçek direksiyon kontrolü. Yan yana mücadele.<br>Son viraja kadar kimse kazanmış sayılmaz.</p><div class="hero-tags"><span>3 TUR</span><b>/</b><span>8 SÜRÜCÜYE KADAR</span><b>/</b><span>TEK KAZANAN</span></div></div></section><aside id="panel" class="menu-panel"></aside></main>
+<section class="control-strip"><div><span class="control-icon">↗</span><div><b>ÇİZGİNİ BUL</b><p><kbd>W A S D</kbd> veya ok tuşlarıyla sür</p></div></div><div><span class="control-icon">≋</span><div><b>VİRAJI KAYARAK AL</b><p><kbd>BOŞLUK</kbd> drift · <kbd>F</kbd> roket · <kbd>E</kbd> mayın</p></div></div><div><span class="control-icon">ϟ</span><div><b>DÜZLÜKTE FARKI AÇ</b><p><kbd>SHIFT</kbd> nitro · <kbd>C</kbd> POV sürüş · <kbd>G</kbd> garaj</p></div></div></section><footer><span>GERÇEK ZAMANLI ONLINE YARIŞ · HERKESLE PİSTE ÇIK</span><span>Doğrudan tarayıcıdan · İndirme yok · Tek tıkla yarış</span></footer></div>
+
+<div id="garage-overlay" hidden>
+  <div class="garage-shell">
+    <div class="garage-header">
+      <div class="garage-header-brand">
+        <span class="brand-mark">///</span>
+        <div>
+          <h2>GARAJ & MODİFİYE ATÖLYESİ</h2>
+          <small>100 KREDİ BÜTÇENLE ARABANI VE SAVAŞ DONANIMLARINI DENGELİ SEÇ</small>
+        </div>
+      </div>
+      <div class="garage-budget-box">
+        <div class="budget-meta">
+          <span>KALAN KULLANILABİLİR BÜTÇE</span>
+          <strong id="garage-credits-val">100 / 100 CR</strong>
+        </div>
+        <div class="budget-bar-outer"><div id="garage-budget-bar" class="budget-bar-fill" style="width:100%"></div></div>
+      </div>
+      <button id="garage-close-btn" class="primary-sm">PİSTE DÖN <span>✕</span></button>
+    </div>
+
+    <div class="garage-main-grid">
+      <!-- Left Hero Showcase -->
+      <div class="garage-showcase-card">
+        <div class="garage-hero-img-wrap">
+          <img id="garage-hero-img" src="/cars/koenigsegg.jpg" alt="Selected Car" class="garage-hero-img">
+          <div class="garage-hero-overlay">
+            <span id="garage-hero-brand" class="garage-badge">KOENIGSEGG</span>
+            <span id="garage-hero-class" class="garage-badge accent">MEGACAR · 1600 HP</span>
+            <span id="garage-hero-price" class="garage-price-tag">70 CR</span>
+          </div>
+        </div>
+        <div class="garage-hero-body">
+          <div class="garage-title-row">
+            <h1 id="garage-hero-name">Koenigsegg Jesko Attack</h1>
+            <span id="garage-hero-tagline" class="garage-hero-tag">REKOR HİPER ARABA</span>
+          </div>
+          <p id="garage-hero-desc" class="garage-hero-desc">310 km/h ile pistin en yüksek son hızına ve megawatt nitro patlamasına sahip hafif siklet rekor arabası.</p>
+          <div class="garage-tech-specs">
+            <div><small>MOTOR</small><strong id="spec-engine">5.0L V8 Twin-Turbo</strong></div>
+            <div><small>GÜÇ</small><strong id="spec-hp">1600 HP</strong></div>
+            <div><small>0-100 KM/H</small><strong id="spec-accel">2.5s</strong></div>
+            <div><small>TORK</small><strong id="spec-torque">1500 Nm</strong></div>
+            <div><small>AĞIRLIK</small><strong id="spec-weight">1390 kg</strong></div>
+          </div>
+          <div class="garage-live-bars">
+            <div class="stat-bar-group">
+              <div class="stat-label-row"><span>SON HIZ</span><b id="bar-val-speed">310 KM/H</b></div>
+              <div class="stat-track"><div id="bar-fill-speed" class="stat-fill orange" style="width:96%"></div></div>
+            </div>
+            <div class="stat-bar-group">
+              <div class="stat-label-row"><span>0-100 İVME</span><b id="bar-val-accel">215 M/S²</b></div>
+              <div class="stat-track"><div id="bar-fill-accel" class="stat-fill" style="width:80%"></div></div>
+            </div>
+            <div class="stat-bar-group">
+              <div class="stat-label-row"><span>YOL TUTUŞU (GRIP)</span><b id="bar-val-grip">6.8</b></div>
+              <div class="stat-track"><div id="bar-fill-grip" class="stat-fill lime" style="width:68%"></div></div>
+            </div>
+            <div class="stat-bar-group">
+              <div class="stat-label-row"><span>NİTRO GÜCÜ</span><b id="bar-val-nitro">325 KM/H</b></div>
+              <div class="stat-track"><div id="bar-fill-nitro" class="stat-fill cyan" style="width:92%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Configurator Tabs -->
+      <div class="garage-config-panel">
+        <div class="garage-tabs">
+          <button class="garage-tab-btn active" data-tab="cars">🏎️ SÜPER ARABALAR (6)</button>
+          <button class="garage-tab-btn" data-tab="weapons">⚔️ SİLAH & SAVUNMA (3)</button>
+          <button class="garage-tab-btn" data-tab="perf">⚡ PERFORMANS (4)</button>
+        </div>
+        <div id="tab-content-cars" class="garage-tab-page active"></div>
+        <div id="tab-content-weapons" class="garage-tab-page" hidden></div>
+        <div id="tab-content-perf" class="garage-tab-page" hidden></div>
+        <div class="garage-summary-footer">
+          <div class="summary-info"><span>TOPLAM HARCAMA:</span><strong id="summary-total-cost">70 CR</strong></div>
+          <button id="garage-reset-btn" class="quiet-danger" type="button">Sıfırla ↻</button>
+          <button id="garage-save-btn" class="primary-btn" type="button">Piste Çık ↗</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="race-hud" hidden><div class="hud-top"><div class="race-brand">GRID<span>SHIFT</span><small id="race-track">LİMAN TURU</small></div><div class="race-metrics"><div><small>SIRALAMA</small><strong id="position">1<span>/ 4</span></strong></div><div><small>TUR</small><strong id="lap">1<span>/ 3</span></strong></div><div><small>SÜRE</small><strong id="race-time">00:00.0</strong></div></div><button id="race-sound" class="quiet">SES KAPALI</button></div><div class="leaderboard"><div class="board-title">CANLI SIRALAMA <i></i></div><div id="leaders"></div></div>
+<div class="hud-right-panel">
+  <div id="cockpit-widget" class="cockpit-widget"><div class="cockpit-img-wrap"><img id="cockpit-car-img" src="/cars/koenigsegg.jpg" alt="Car"><span id="cockpit-car-name">JESKO ATTACK</span></div><div class="cockpit-weapons"><div id="cockpit-shield" class="weapon-slot" title="Enerji Kalkanı"><span class="slot-icon">🛡️</span><span id="cockpit-shield-status" class="slot-text">YOK</span></div><div id="cockpit-rocket" class="weapon-slot" title="Güdümlü Roket [F]"><span class="slot-icon">🚀</span><span id="cockpit-rocket-ammo" class="slot-text">—</span><kbd>F</kbd></div><div id="cockpit-mine" class="weapon-slot" title="Taktik Mayın [E]"><span class="slot-icon">💣</span><span id="cockpit-mine-ammo" class="slot-text">—</span><kbd>E</kbd></div></div></div>
+  <div class="hud-controls"><button id="cam-toggle-btn" class="cam-toggle-btn">📹 <span id="hud-cam-text">POV SÜRÜŞ</span> <kbd>C</kbd></button><button id="host-restart" class="host-btn" hidden>↺ Yeniden Başlat</button><button id="host-finish" class="host-btn" hidden>⏹ Yarışı Bitir</button><button id="reset" class="reset-button">↻ Piste dön <span>R</span></button></div>
+</div>
+<div id="pov-hud" class="pov-hud" hidden><div class="pov-crosshair"></div><div class="pov-vignette"></div><div id="pov-cockpit-wheel" class="pov-wheel" hidden><svg viewBox="0 0 200 200" class="wheel-svg"><circle cx="100" cy="100" r="82" fill="none" stroke="#181c24" stroke-width="22"/><circle cx="100" cy="100" r="82" fill="none" stroke="#252c38" stroke-width="14" stroke-dasharray="8 6"/><rect x="96" y="8" width="8" height="18" fill="#00e5ff" rx="2"/><circle cx="100" cy="100" r="32" fill="#10141d" stroke="#333f52" stroke-width="4"/><text x="100" y="105" fill="#00e5ff" font-size="12" font-weight="900" font-family="monospace" text-anchor="middle">GRID</text><rect x="26" y="94" width="44" height="12" fill="#1c222e" rx="3"/><rect x="130" y="94" width="44" height="12" fill="#1c222e" rx="3"/><rect x="94" y="130" width="12" height="40" fill="#1c222e" rx="3"/></svg></div></div><div class="speedometer"><div id="car-badge"></div><div><strong id="speed">000</strong><span>KM/H</span></div><div class="rev-bars" id="rev-bars"></div><div class="nitro-label"><span>NİTRO</span><span id="nitro-number">100%</span></div><div class="nitro-track"><div id="nitro-fill"></div></div><p>SHIFT · NİTRO &nbsp; C · POV &nbsp; BOŞLUK · DRİFT &nbsp; F · FÜZE &nbsp; E · MAYIN</p></div><div class="minimap-box"><span>PİST RADARI</span><canvas id="minimap" width="240" height="160"></canvas></div><div id="race-message" role="status"></div><div id="touch-controls"><div class="touch-steering"><button data-control="left" aria-label="Sola dön">◀</button><button data-control="right" aria-label="Sağa dön">▶</button></div><div class="touch-pedals"><button data-control="cam" class="touch-cam">📹 POV</button><button data-control="rocket" class="touch-weapon">🚀 FÜZE</button><button data-control="mine" class="touch-weapon">💣 MAYIN</button><button data-control="drift">DRİFT</button><button data-control="boost">NİTRO</button><button data-control="brake">FREN</button><button data-control="gas">GAZ</button></div></div><div id="countdown" hidden></div><div id="results" hidden></div></div><div id="toast" role="alert" hidden></div><script type="module" src="/race-menu.js"></script></body></html>
+

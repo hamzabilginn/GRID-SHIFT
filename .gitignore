@@ -1,0 +1,13 @@
+node_modules/
+*.zip
+*.aab
+*.apk
+*.jks
+*.keystore
+*.p12
+.env*
+local.properties
+keystore.properties
+.gradle/
+**/build/
+.DS_Store

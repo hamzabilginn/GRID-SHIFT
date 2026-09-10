@@ -1,0 +1,30 @@
+workflows:
+  ios-release:
+    name: Grid Shift iOS
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    environment:
+      node: 22
+      xcode: latest
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.hamzabilginn.gridshift
+    scripts:
+      - name: Install dependencies and test
+        script: |
+          npm install
+          npm test
+      - name: Generate packaged iOS app
+        script: npm run mobile:ios
+      - name: Configure uploaded signing profiles
+        script: xcode-project use-profiles
+      - name: Set build number
+        script: |
+          cd ios/App
+          agvtool new-version -all "$BUILD_NUMBER"
+      - name: Build signed IPA
+        script: |
+          xcode-project build-ipa --project ios/App/App.xcodeproj --scheme App
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
