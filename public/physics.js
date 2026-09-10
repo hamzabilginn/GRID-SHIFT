@@ -9,9 +9,9 @@
   const CARS = [
     {
       id: 'jesko',
-      name: 'Koenigsegg Jesko Attack',
-      shortName: 'Jesko Attack',
-      brand: 'Koenigsegg',
+      name: 'Apex Vortex',
+      shortName: 'Vortex',
+      brand: 'GRID WORKS',
       class: 'MEGACAR · 1600 HP',
       price: 70,
       hp: '1600 HP',
@@ -28,14 +28,14 @@
       nitroRate: 11,
       color: '#f0f4f8',
       accentColor: '#ff6a1a',
-      image: '/cars/koenigsegg.jpg',
-      desc: '310 km/h ile pistin en yüksek son hızına ve megawatt nitro patlamasına sahip hafif siklet rekor arabası.'
+      image: '/cars/grid-car.svg',
+      desc: 'Hafif gövde, yüksek son hız ve pistin en sert nitro patlaması için tasarlanmış prototip.'
     },
     {
       id: 'chiron',
-      name: 'Bugatti Chiron Pur Sport',
-      shortName: 'Chiron Sport',
-      brand: 'Bugatti',
+      name: 'Azure Comet',
+      shortName: 'Comet',
+      brand: 'GRID WORKS',
       class: 'HYPERCAR · 1500 HP',
       price: 60,
       hp: '1500 HP',
@@ -52,14 +52,14 @@
       nitroRate: 10,
       color: '#0055cc',
       accentColor: '#1a1f2c',
-      image: '/cars/bugatti.jpg',
-      desc: 'W16 dört turbolu motor, yüksek hızda kaya gibi gövde stabilitesi ve devasa aerodinamik aktif rüzgarlık.'
+      image: '/cars/grid-car.svg',
+      desc: 'Uzun düzlüklerde kararlı kalan, yüksek bastırma gücüne sahip dengeli pist otomobili.'
     },
     {
       id: 'sf90',
-      name: 'Ferrari SF90 Stradale',
-      shortName: 'SF90 Stradale',
-      brand: 'Ferrari',
+      name: 'Crimson Pulse',
+      shortName: 'Pulse',
+      brand: 'GRID WORKS',
       class: 'HYBRID SUPERCAR · 1000 HP',
       price: 55,
       hp: '1000 HP',
@@ -76,14 +76,14 @@
       nitroRate: 15,
       color: '#e60012',
       accentColor: '#ffd500',
-      image: '/cars/ferrari.jpg',
-      desc: 'Elektrik + V8 çift turbo desteğiyle oyundaki en patlayıcı 0-100 ivmesi ve viraj çıkış tepkisi.'
+      image: '/cars/grid-car.svg',
+      desc: 'Viraj çıkışlarında anında tepki veren hibrit güç aktarımı ve patlayıcı kalkış ayarı.'
     },
     {
       id: 'aventador',
-      name: 'Lamborghini Aventador SVJ',
-      shortName: 'Aventador SVJ',
-      brand: 'Lamborghini',
+      name: 'Solar Fang',
+      shortName: 'Fang',
+      brand: 'GRID WORKS',
       class: 'V12 SUPER SPORTS · 770 HP',
       price: 50,
       hp: '770 HP',
@@ -100,14 +100,14 @@
       nitroRate: 11,
       color: '#ff9900',
       accentColor: '#161920',
-      image: '/cars/lamborghini.jpg',
-      desc: 'Geniş açılı kesintisiz drift yapabilen, V12 kükremesi ve alev atan yüksek egzozlu pist canavarı.'
+      image: '/cars/grid-car.svg',
+      desc: 'Geniş drift açısı ve güçlü arka aksıyla teknik virajlar için ayarlanmış pist canavarı.'
     },
     {
       id: 'gtr',
-      name: 'Nissan GT-R Nismo R35',
-      shortName: 'GT-R Nismo',
-      brand: 'Nissan',
+      name: 'Iron Lynx',
+      shortName: 'Lynx',
+      brand: 'GRID WORKS',
       class: 'AWD GODZILLA · 600 HP',
       price: 40,
       hp: '600 HP',
@@ -124,14 +124,14 @@
       nitroRate: 13,
       color: '#c8d0db',
       accentColor: '#ff2040',
-      image: '/cars/gtr.jpg',
-      desc: 'Dört çeker üstün zemin tutuşu, kalkışta brutal mekanik tork ve hata affeden gövde geometrisi.'
+      image: '/cars/grid-car.svg',
+      desc: 'Dört teker çekişi ve affedici gövde geometrisiyle yeni sürücüler için güvenli güç.'
     },
     {
       id: 'gt3rs',
-      name: 'Porsche 911 GT3 RS',
-      shortName: '911 GT3 RS',
-      brand: 'Porsche',
+      name: 'Emerald Raptor',
+      shortName: 'Raptor',
+      brand: 'GRID WORKS',
       class: 'TRACK WEAPON · 525 HP',
       price: 35,
       hp: '525 HP',
@@ -148,8 +148,8 @@
       nitroRate: 10,
       color: '#00e676',
       accentColor: '#12161f',
-      image: '/cars/porsche.jpg',
-      desc: 'Maksimum yere basma gücü (downforce) ve kusursuz viraj tutuşu; virajları rayda gider gibi keskin döner.'
+      image: '/cars/grid-car.svg',
+      desc: 'Maksimum yere basma gücü ve kusursuz viraj tutuşuyla çizgiyi ray gibi takip eder.'
     }
   ];
 

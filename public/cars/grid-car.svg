@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" role="img" aria-labelledby="title desc">
+  <title id="title">Grid Shift özgün yarış otomobili</title><desc id="desc">Turkuaz ve turuncu çizgilerle stilize edilmiş yarış otomobili.</desc>
+  <defs><linearGradient id="paint" x1="0" x2="1"><stop stop-color="#ff6638"/><stop offset="1" stop-color="#ffb347"/></linearGradient></defs>
+  <rect width="800" height="420" fill="#080d16"/><path d="M90 300h620l-48-72-100-18-76-80H323l-82 80-106 18z" fill="url(#paint)" stroke="#d9fff4" stroke-width="8"/>
+  <path d="m300 210 40-54h120l45 54z" fill="#102535" stroke="#8cebe0" stroke-width="6"/><path d="M110 300h590M190 260h420" stroke="#8cebe0" stroke-width="8" opacity=".8"/>
+  <circle cx="215" cy="310" r="46" fill="#10131c" stroke="#d9fff4" stroke-width="12"/><circle cx="585" cy="310" r="46" fill="#10131c" stroke="#d9fff4" stroke-width="12"/>
+  <path d="M76 348h648" stroke="#ff6638" stroke-width="10" stroke-linecap="round"/><text x="400" y="65" fill="#d9fff4" font-family="monospace" font-size="24" text-anchor="middle" letter-spacing="5">GRID WORKS</text>
+</svg>

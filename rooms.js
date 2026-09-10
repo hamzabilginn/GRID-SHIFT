@@ -102,7 +102,7 @@ class RoomManager {
     // Cleanup empty custom rooms older than 10 minutes
     for (const [id, room] of this.rooms) {
       if (id === 'genel') continue;
-      if (room.race.connected().length === 0 && (now - room.lastActivity) > 600000) {
+      if (room.race.connected().length === 0 && room.streams.size === 0 && room.sockets.size === 0 && (now - room.lastActivity) > 600000) {
         this.rooms.delete(id);
       }
     }

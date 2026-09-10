@@ -55,3 +55,5 @@ Mobil garajın dar ekran düzeni, güvenli ekran boşlukları, dokunmatik basıl
 Codemagic yapılandırması `android-debug`, `android-release` ve `ios-release` akışlarını içerir. Kurulum ve imzalama adımları [deploy/CODEMAGIC.md](deploy/CODEMAGIC.md) içindedir. AWS sunucusu değiştirilmedi; HTTPS adresi henüz doğrulanmadı. `deploy/DEPLOY.md` servis yayın adımlarını açıklar.
 
 Bağımlılık denetiminde geliştirme araçlarındaki `@capacitor/cli → xcode → uuid` zincirinde üç orta seviye uyarı görüldü; çalışma zamanı bağımlılıklarında uyarı raporlanmadı. İmza veya mağaza yayını öncesinde araç güncellemeleri tekrar kontrol edilmelidir.
+
+Mağaza paketi için özgün araç adları ve `public/cars/grid-car.svg` vektör çizimi kullanılır; üçüncü taraf otomobil markaları ve fotoğraf dosyaları mağaza paketine dahil edilmez. Gizlilik metni `public/privacy.html` adresindedir. Play Console’da destek e-postası, uygulama erişim bilgileri ve kapalı test gereksinimi ayrıca doldurulmalıdır.

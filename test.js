@@ -2,6 +2,7 @@ const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const {Race}=require('./game');
 const {Room}=require('./rooms');
+const {attachRealtime}=require('./realtime');
 test('practice race starts with bots, accepts input and returns to lobby',()=>{
  const r=new Race(),p=r.join('Pilot');r.connection(p.token,true);
  r.action(p.token,'start',{},10000);assert.equal(r.phase,'countdown');assert.equal(r.players.size,4);
@@ -38,4 +39,30 @@ test('HTTP password gate rejects forged reconnect tokens',async()=>{
   const allowed=await post('rooms/join',{roomId:data.roomId,token:data.token});assert.equal(allowed.status,200);
   const page=await fetch('http://127.0.0.1:13879/');assert.equal(page.status,200);assert.match(await page.text(),/offline-race.js/);
  } finally {child.kill();}
+});
+
+test('WebSocket room connection authenticates and receives live state', async () => {
+ const http = require('node:http');
+ const WebSocket = require('ws');
+ const {RoomManager} = require('./rooms');
+ const manager = new RoomManager();
+ const room = manager.createRoom('socket-test', 'Socket Test', '');
+ const player = room.race.join('Socket Pilot');
+ const server = http.createServer();
+ attachRealtime(server, manager);
+ await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+ const port = server.address().port;
+ try {
+  const ws = new WebSocket(`ws://127.0.0.1:${port}/api/socket`, {origin:`http://127.0.0.1:${port}`});
+  const message = await new Promise((resolve, reject) => {
+   const timer = setTimeout(() => reject(Error('WebSocket state timeout')), 2500);
+   ws.on('message', data => { clearTimeout(timer); resolve(JSON.parse(data)); });
+   ws.on('error', reject);
+   ws.on('open', () => ws.send(JSON.stringify({type:'auth', token:player.token, roomId:room.id})));
+  });
+  assert.equal(message.type, 'state');
+  assert.equal(message.state.roomId, room.id);
+  assert.equal(message.state.players[0].name, 'Socket Pilot');
+  ws.close();
+ } finally { await new Promise(resolve => server.close(resolve)); }
 });

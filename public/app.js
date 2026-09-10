@@ -1161,7 +1161,7 @@ const chromeMat = new THREE.MeshMatcapMaterial({ matcap: autoMatcapTex, color: 0
   function loadMasterCarModel() {
     if (carModelLoading || carMasterModel) return;
     carModelLoading = true;
-    gltfLoader.load('/cars/ferrari.glb', function (gltf) {
+    gltfLoader.load('/cars/grid-car.glb', function (gltf) {
       const root = gltf.scene.children[0] || gltf.scene;
       root.rotation.y = Math.PI; // Face +Z forward
       root.scale.set(5.8, 5.8, 5.8);

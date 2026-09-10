@@ -1,5 +1,5 @@
 (function(){
-const randomUUID = () => crypto.randomUUID();
+const randomUUID = () => (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") ? crypto.randomUUID() : "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => { const r = Math.random() * 16 | 0; return (c === "x" ? r : (r & 0x3 | 0x8)).toString(16); });
 const P=window.RacePhysics;
 const COLORS=['#ff6638','#69e3ff','#d7f66a','#c099ff','#ff7bb1','#ffe091','#9effc7','#eef2ff'];
 
@@ -26,7 +26,7 @@ class Race {
   upgrades=[...new Set(upgrades)];
   if(token&&this.players.has(token)){
    const existing=this.players.get(token);
-   if(carId&&P.CARS.some(c=>c.id===carId)){
+   if(this.phase==='lobby'&&carId&&P.CARS.some(c=>c.id===carId)){
     const cost=calcCost(carId,upgrades);
     if(cost<=100){
      const spec=P.CARS.find(c=>c.id===carId);
