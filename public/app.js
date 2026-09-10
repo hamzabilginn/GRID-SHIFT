@@ -2868,7 +2868,7 @@ const chromeMat = new THREE.MeshMatcapMaterial({ matcap: autoMatcapTex, color: 0
   /* ── Input Handlers ── */
   const pressed = new Set();
   document.addEventListener('keydown', e => {
-    if (e.target.tagName === 'INPUT') return;
+    if (e.target.closest('input, textarea, select, dialog')) return;
     pressed.add(e.code);
     if (e.code === 'KeyR' && state?.phase === 'race') act('reset');
     if (e.code === 'KeyF' && state?.phase === 'race') act('fire_missile');
@@ -2882,8 +2882,13 @@ const chromeMat = new THREE.MeshMatcapMaterial({ matcap: autoMatcapTex, color: 0
     }
   });
   document.addEventListener('keyup', e => pressed.delete(e.code));
-  window.addEventListener('blur', () => pressed.clear());
-  document.addEventListener('visibilitychange', () => { pressed.clear(); if (document.hidden) audioCtx?.suspend(); else if (sound) audioCtx?.resume(); });
+  function releaseControls() {
+    pressed.clear();
+    $$('#touch-controls button').forEach(button => button.classList.remove('held'));
+  }
+  window.addEventListener('blur', releaseControls);
+  document.addEventListener('race-menu-open', releaseControls);
+  document.addEventListener('visibilitychange', () => { releaseControls(); if (document.hidden) audioCtx?.suspend(); else if (sound) audioCtx?.resume(); });
 
   $$('#touch-controls button').forEach(btn => {
     const ctrl = btn.dataset.control;

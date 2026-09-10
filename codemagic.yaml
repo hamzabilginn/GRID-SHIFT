@@ -1,4 +1,45 @@
 workflows:
+  android-debug:
+    name: Grid Shift Android test APK
+    instance_type: linux_x2
+    max_build_duration: 60
+    environment:
+      node: 22
+      java: 21
+    scripts:
+      - name: Install dependencies and test
+        script: npm ci && npm test
+      - name: Generate Android project
+        script: npm run mobile:android
+      - name: Build test APK
+        script: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+    artifacts:
+      - android/app/build/outputs/apk/debug/*.apk
+  android-release:
+    name: Grid Shift Android signed AAB
+    instance_type: linux_x2
+    max_build_duration: 60
+    environment:
+      node: 22
+      java: 21
+      android_signing:
+        - grid_shift_upload
+    scripts:
+      - name: Install dependencies and test
+        script: npm ci && npm test
+      - name: Generate Android project
+        script: npm run mobile:android
+      - name: Verify signing and build app bundle
+        script: |
+          test -n "$CM_KEYSTORE_PATH" || { echo "Upload grid_shift_upload keystore in Codemagic"; exit 1; }
+          cd android
+          chmod +x gradlew
+          ./gradlew bundleRelease
+    artifacts:
+      - android/app/build/outputs/bundle/release/*.aab
   ios-release:
     name: Grid Shift iOS
     instance_type: mac_mini_m2
@@ -12,7 +53,7 @@ workflows:
     scripts:
       - name: Install dependencies and test
         script: |
-          npm install
+          npm ci
           npm test
       - name: Generate packaged iOS app
         script: npm run mobile:ios

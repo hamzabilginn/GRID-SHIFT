@@ -10,5 +10,9 @@ if(platform==='android'){
  const file='android/variables.gradle';
  let source=fs.readFileSync(file,'utf8').replace(/compileSdkVersion\s*=\s*\d+/,'compileSdkVersion = 36').replace(/targetSdkVersion\s*=\s*\d+/,'targetSdkVersion = 36');
  fs.writeFileSync(file,source);
+ const gradle='android/app/build.gradle';
+ let app=fs.readFileSync(gradle,'utf8');
+ if(!app.includes('gridshift-release.gradle')) app += '\napply from: "../../scripts/gridshift-release.gradle"\n';
+ fs.writeFileSync(gradle,app);
 }
 console.log('Native project prepared. Open it with Capacitor and configure release signing.');

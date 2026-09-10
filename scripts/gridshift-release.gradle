@@ -1,0 +1,19 @@
+// Codemagic supplies signing secrets from its encrypted keystore storage.
+def buildNumber = System.getenv('BUILD_NUMBER')
+android {
+    defaultConfig {
+        if (buildNumber) versionCode Integer.parseInt(buildNumber)
+        versionName '1.1.0'
+    }
+    if (System.getenv('CM_KEYSTORE_PATH')) {
+        signingConfigs {
+            release {
+                storeFile file(System.getenv('CM_KEYSTORE_PATH'))
+                storePassword System.getenv('CM_KEYSTORE_PASSWORD')
+                keyAlias System.getenv('CM_KEY_ALIAS')
+                keyPassword System.getenv('CM_KEY_PASSWORD')
+            }
+        }
+        buildTypes.release.signingConfig signingConfigs.release
+    }
+}

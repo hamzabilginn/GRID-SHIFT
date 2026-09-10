@@ -11,3 +11,7 @@ keystore.properties
 .gradle/
 **/build/
 .DS_Store
+android/
+ios/
+*.mobileprovision
+*.ipa

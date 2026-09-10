@@ -50,4 +50,8 @@ Gerçek Android ve iPhone cihazlarında dokunma, performans, uygulama arka plana
 
 ## Yayın durumu
 
-Yerel geliştirme tamamlanan bölümleri yukarıda listelenmiştir. AWS sunucusu değiştirilmedi; HTTPS adresi henüz doğrulanmadı. GitHub remote tanımlandı ancak ağ kısıtı nedeniyle push yapılamadı. Native projeler henüz üretilmedi veya derlenmedi. `deploy/DEPLOY.md` yayın adımlarını açıklar.
+Mobil garajın dar ekran düzeni, güvenli ekran boşlukları, dokunmatik basılı durumları ve yarış menüsünün sürüş girdilerini bırakması tamamlandı. Beş otomatik oyun/HTTP testi geçti; Android native proje üretimi ve Capacitor sync yerelde doğrulandı. Gerçek cihaz ve görsel tarayıcı doğrulaması henüz tamamlanmadı. APK/AAB/IPA derlemesi henüz çalıştırılmadı.
+
+Codemagic yapılandırması `android-debug`, `android-release` ve `ios-release` akışlarını içerir. Kurulum ve imzalama adımları [deploy/CODEMAGIC.md](deploy/CODEMAGIC.md) içindedir. AWS sunucusu değiştirilmedi; HTTPS adresi henüz doğrulanmadı. `deploy/DEPLOY.md` servis yayın adımlarını açıklar.
+
+Bağımlılık denetiminde geliştirme araçlarındaki `@capacitor/cli → xcode → uuid` zincirinde üç orta seviye uyarı görüldü; çalışma zamanı bağımlılıklarında uyarı raporlanmadı. İmza veya mağaza yayını öncesinde araç güncellemeleri tekrar kontrol edilmelidir.

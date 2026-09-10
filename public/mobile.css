@@ -4,6 +4,26 @@
 .practice-card small{font-size:10px;letter-spacing:2px;color:#81ddbc}.practice-card strong{font-size:23px;display:flex;justify-content:space-between}.practice-card>span{font-size:12px;color:#b3cccf}
 .hero-copy h1{letter-spacing:-4px}.hero-copy .eyebrow{letter-spacing:3px;color:#91dfd4}.garage-img{object-fit:contain}
 input{font-size:16px!important}.room-card{border-radius:12px!important}.primary{min-height:48px}button{min-height:42px}
+button:focus-visible,a:focus-visible{outline:2px solid #91dfd4;outline-offset:3px}
+[hidden]{display:none!important}
+@media(max-width:720px){
+ #menu-shell{padding-top:env(safe-area-inset-top)}
+ header{height:auto;gap:12px;padding:16px 0;flex-wrap:wrap}.top-right{flex-wrap:wrap}.top-right button{font-size:10px}
+ .menu>*{min-width:0}.menu-panel{padding:18px 0!important}.showcase{min-height:260px}
+ #garage-overlay{padding:0;align-items:flex-start}.garage-shell{border-radius:0;padding:14px;min-height:100dvh;gap:14px}
+ .garage-header{gap:12px}.garage-header-brand{min-width:0}.garage-header-brand h2{font-size:18px}.garage-header-brand small{line-height:1.6;letter-spacing:.5px}
+ .garage-budget-box{min-width:0;flex:1}.garage-main-grid{gap:14px}.garage-title-row{flex-wrap:wrap}.garage-hero-body{padding:14px}
+ .garage-tech-specs{grid-template-columns:repeat(2,minmax(0,1fr))}.garage-tech-specs strong{white-space:normal}
+ .garage-tabs{overflow-x:auto}.garage-tab-btn{flex:0 0 120px;min-height:52px;font-size:9px}.garage-tab-page{max-height:none;padding:10px}
+ .garage-item-card{grid-template-columns:64px minmax(0,1fr);gap:10px;padding:10px}.garage-item-card>:last-child{grid-column:2}.item-thumb{width:64px}
+ .garage-summary-footer{flex-wrap:wrap;padding:12px;padding-bottom:max(12px,env(safe-area-inset-bottom))}.summary-info{width:100%}
+ .results-card{width:100%;min-width:0}.race-metrics{gap:12px!important}
+}
+@media(pointer:coarse){
+ #touch-controls button.held{background:#506c87!important;border-color:#c7fff3!important;transform:scale(.96)}
+ #touch-controls button[data-control=gas].held{background:#ff9562!important}
+ .speedometer{bottom:max(16px,env(safe-area-inset-bottom))!important}
+}
 @media(pointer:coarse){
  #menu-shell{padding:0 max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left))}
  header{height:auto;min-height:76px;flex-wrap:wrap;padding:12px 0}.top-right{gap:8px;flex-wrap:wrap}.brand small,.control-strip,.top-right .connection{display:none}
