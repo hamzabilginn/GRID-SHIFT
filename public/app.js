@@ -272,9 +272,23 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
       updateConnection();
       return;
     }
-    events = new window.GridShiftConnection({base:apiBase, token, roomId:currentRoomId || 'genel'});
+    if (typeof window.GridShiftConnection === 'function') {
+      events = new window.GridShiftConnection({base:apiBase, token, roomId:currentRoomId || 'genel'});
+    } else {
+      const sse = new EventSource((apiBase || '') + '/api/events?token=' + encodeURIComponent(token) + '&room=' + encodeURIComponent(currentRoomId || 'genel'));
+      events = {
+        mode: 'sse',
+        source: sse,
+        close() { sse.close(); },
+        send(data) { return api('action', data); }
+      };
+      sse.onmessage = e => events.onmessage?.(e);
+      sse.onopen = () => events.onopen?.();
+      sse.onerror = () => events.onerror?.();
+    }
     events.onexpired = () => {
       online = false; token = null; state = null;
+      events?.close();
       sessionStorage.removeItem('gs-token');
       document.body.classList.remove('racing');
       $('#race-hud').hidden = true;
@@ -308,13 +322,11 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
       try {
         await api('rooms/join', { roomId: currentRoomId, token });
       } catch (err) {
-        if (/adını|katıl|bulunamadı/i.test(err.message)) {
-          events.close();
-          sessionStorage.removeItem('gs-token');
-          token = null;
-          state = null;
-          renderPanel();
-        }
+        events?.close();
+        sessionStorage.removeItem('gs-token');
+        token = null;
+        state = null;
+        renderPanel();
       }
     };
   }
@@ -3003,7 +3015,8 @@ const chromeMat = new THREE.MeshMatcapMaterial({ matcap: autoMatcapTex, color: 0
     connect();
     renderUI();
   } else if (token) {
-    api('join', { token }).then(d => {
+    const savedName = localStorage.getItem('gs-name') || 'Sürücü';
+    api('join', { token, name: savedName, carId: selectedCarId, upgrades: selectedUpgrades }).then(d => {
       state = d.state;
       if (!trackData || trackData.id !== state.trackId) {
         trackData = P.makeTrack(state.trackId);
@@ -3014,6 +3027,9 @@ const chromeMat = new THREE.MeshMatcapMaterial({ matcap: autoMatcapTex, color: 0
     }).catch(() => {
       sessionStorage.removeItem('gs-token');
       token = null;
+      state = null;
+      currentRoomId = 'genel';
+      localStorage.setItem('gs-room', 'genel');
       renderPanel();
     });
   } else {

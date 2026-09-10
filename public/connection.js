@@ -44,11 +44,19 @@
       };
     }
     startSSE() {
+      if (this.closed) return;
       this.mode = 'sse';
-      this.source = new EventSource(this.base + '/api/events?token=' + encodeURIComponent(this.token) + '&room=' + encodeURIComponent(this.roomId));
-      this.source.onmessage = event => { if (!this.closed) this.onmessage?.(event); };
-      this.source.onopen = () => { this.ready = true; this.onopen?.(); };
-      this.source.onerror = () => { this.ready = false; this.onerror?.(); };
+      const source = new EventSource(this.base + '/api/events?token=' + encodeURIComponent(this.token) + '&room=' + encodeURIComponent(this.roomId));
+      this.source = source;
+      source.onmessage = event => { if (!this.closed) this.onmessage?.(event); };
+      source.onopen = () => { this.ready = true; this.onopen?.(); };
+      source.onerror = () => {
+        this.ready = false;
+        if (this.closed || source.readyState === 2) {
+          source.close();
+        }
+        this.onerror?.();
+      };
     }
     send(data) {
       if (!this.ready || this.socket?.readyState !== 1) return Promise.reject(Error('Bağlantı bekleniyor…'));
@@ -71,7 +79,9 @@
     close() {
       this.closed = true; this.ready = false;
       clearTimeout(this.connectTimer); clearTimeout(this.retryTimer);
-      this.source?.close(); this.socket?.close(); this.rejectPending();
+      if (this.source) { this.source.close(); this.source = null; }
+      if (this.socket) { this.socket.close(); this.socket = null; }
+      this.rejectPending();
     }
   }
   window.GridShiftConnection = GridShiftConnection;

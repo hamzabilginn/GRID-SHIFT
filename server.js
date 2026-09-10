@@ -121,14 +121,11 @@ const server = http.createServer(async (req, res) => {
       }
 
       if (url.pathname === '/api/rooms/join' || url.pathname === '/api/join') {
-        const roomId = data.roomId || 'genel';
+        let roomId = data.roomId || 'genel';
         let room = rooms.get(roomId);
         if (!room) {
-          if (roomId === 'genel') {
-            room = rooms.createRoom('genel', 'Genel Pist (Herkese Açık)', '', { trackId: 0, laps: 3, bots: true });
-          } else {
-            return json(res, 404, { error: 'Oda bulunamadı veya kapandı.' });
-          }
+          roomId = 'genel';
+          room = rooms.get('genel') || rooms.createRoom('genel', 'Genel Pist (Herkese Açık)', '', { trackId: 0, laps: 3, bots: true });
         }
 
         if (room.hasPassword() && !room.race.players.has(data.token)) {
@@ -137,7 +134,8 @@ const server = http.createServer(async (req, res) => {
           }
         }
 
-        const p = room.race.join(data.name, data.token, data.carId, data.upgrades);
+        const playerName = String(data.name || (data.token && room.race.players.get(data.token)?.name) || 'Sürücü').trim().slice(0, 18);
+        const p = room.race.join(playerName, data.token, data.carId, data.upgrades);
         room.lastActivity = Date.now();
         room.broadcast();
         return json(res, 200, {
