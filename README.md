@@ -50,7 +50,7 @@ Gerçek Android ve iPhone cihazlarında dokunma, performans, uygulama arka plana
 
 ## Yayın durumu
 
-Mobil garajın dar ekran düzeni, güvenli ekran boşlukları, dokunmatik basılı durumları ve yarış menüsünün sürüş girdilerini bırakması tamamlandı. Beş otomatik oyun/HTTP testi geçti; Android native proje üretimi ve Capacitor sync yerelde doğrulandı. Gerçek cihaz ve görsel tarayıcı doğrulaması henüz tamamlanmadı. APK/AAB/IPA derlemesi henüz çalıştırılmadı.
+Mobil garajın dar ekran düzeni, güvenli ekran boşlukları, dokunmatik basılı durumları ve yarış menüsünün sürüş girdilerini bırakması tamamlandı. Altı otomatik oyun/HTTP/WebSocket testi geçti; Android native proje üretimi, Capacitor sync ve debug APK derlemesi yerelde doğrulandı. Gerçek cihaz ve görsel tarayıcı doğrulaması henüz tamamlanmadı. İmzalı AAB/IPA derlemesi için mağaza anahtarları gerekir.
 
 Codemagic yapılandırması `android-debug`, `android-release` ve `ios-release` akışlarını içerir. Kurulum ve imzalama adımları [deploy/CODEMAGIC.md](deploy/CODEMAGIC.md) içindedir. AWS sunucusu değiştirilmedi; HTTPS adresi henüz doğrulanmadı. `deploy/DEPLOY.md` servis yayın adımlarını açıklar.
 
