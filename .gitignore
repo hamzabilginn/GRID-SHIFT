@@ -9,6 +9,7 @@ node_modules/
 local.properties
 keystore.properties
 .gradle/
+.gradle-home/
 **/build/
 .DS_Store
 android/
@@ -17,3 +18,4 @@ ios/
 *.ipa
 www/
 artifacts/
+deploy/*.local.txt
